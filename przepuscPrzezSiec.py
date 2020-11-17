@@ -3,6 +3,29 @@ import training_vector
 
 
 def przepuscPrzezSiec(iteracje):
+    def zapis_do_pliku(hidden, output, error):
+        """Odpowiada za zapis wynikow o pliku"""
+        file = open("src/wagi/hidden.txt", "w")
+        for i in range(len(hidden)):
+            for j in range(len(hidden[0,])):
+                file.write(str(hidden[i, j]) + " ")
+            if i != (len(hidden) - 1):
+                file.write("\n")
+        file.close()
+
+        file = open("src/wagi/out.txt", "w")
+        for i in range(len(output)):
+            for j in range(len(output[0,])):
+                file.write(str(output[i, j]) + " ")
+            if i != (len(output) - 1):
+                file.write("\n")
+        file.close()
+
+        file = open("src/wagi/error.txt", "w")
+        file.write(str(error.sum()))
+        file.close()
+        return 0
+
     """Tworzenie DATA_SET"""
     global error
     error = 0
@@ -20,6 +43,8 @@ def przepuscPrzezSiec(iteracje):
     def pochodna(x):
         """Funkcje pomocniczne , pomagaja w czytelnosci kodu"""
         return aktywacja(x) * (1 - aktywacja(x))
+
+
 
     """Losowanie wag zarowno po stronie hidden jak i output"""
     hWeight = np.random.rand(49, 41)
@@ -50,10 +75,11 @@ def przepuscPrzezSiec(iteracje):
         """Ograniczenie precyzji do 0.001"""
         if error.sum() < 0.001:
             print("Algorytm wyuczony!")
+            #zapisz_wagi(hWeight, oWeight, 0.001)
+            zapis_do_pliku(hWeight, oWeight, error.sum())
             a = 1 + 3
             print(a)
-            #zapisz_wagi(hWeight, oWeight, 0.001)
-            return hWeight, oWeight, error.sum()
+            return 0
 
         """Metoda gradientu prostego (Gradient Descent)
             Znalezienie 3 pochodnych w warstwie output i ich podstawienie
@@ -79,8 +105,8 @@ def przepuscPrzezSiec(iteracje):
         hWeight -= learning_rate * hWynik
         oWeight -= learning_rate * oWynik
 
-    #zapisz_wagi(hWeight, oWeight, error.sum())
-    return hWeight, oWeight, error.sum()
+    zapis_do_pliku(hWeight, oWeight, error.sum())
+    return 0
 
 
 przepuscPrzezSiec(300000)
