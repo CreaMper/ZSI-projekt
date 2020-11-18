@@ -3,7 +3,6 @@ import cv2 as cv
 import numpy as np
 import pytesseract
 
-import odczytaj_wagi
 
 """Ladowanie tesseract'a"""
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -26,7 +25,6 @@ def przygotuj_wejscie(image_path, sensitivity):
     # sprawdzanie ile znaków zostało znalezionych
     number_of_signs = int(len(boxes.split()) / 6)
 
-    hWeight , oWeight = odczytaj_wagi.odczytaj_wagi()
 
     # zmienne pomocnicze
     vector = np.zeros((number_of_signs, 49))
