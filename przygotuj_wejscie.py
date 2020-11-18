@@ -3,7 +3,6 @@ import cv2 as cv
 import numpy as np
 import pytesseract
 
-
 """Ladowanie tesseract'a"""
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
@@ -25,10 +24,21 @@ def przygotuj_wejscie(image_path, sensitivity):
     # sprawdzanie ile znaków zostało znalezionych
     number_of_signs = int(len(boxes.split()) / 6)
 
-
     # zmienne pomocnicze
     vector = np.zeros((number_of_signs, 49))
     sign_number = 0
+
+    def pokaz_zaznaczenie(img_box):
+        h2, w2, c2 = img_box.shape
+        boxes_2 = pytesseract.image_to_boxes(img_box)
+        for b2 in boxes_2.splitlines():
+            b2 = b2.split(' ')
+            img_box = cv.rectangle(img_box, (int(b2[1]), h2 - int(b2[2])), (int(b2[3]), h2 - int(b2[4])), (0, 255, 0),
+                                   2)
+        # cv.imshow('Co znalazłem?', img_box)
+        # cv.waitKey(0)
+
+    #pokaz_zaznaczenie(img)
 
     for b in boxes.splitlines():
         """Petla sprawdzajacy array boxes pod kontem znalezionych obiektow"""
