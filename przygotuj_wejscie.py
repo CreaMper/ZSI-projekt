@@ -88,8 +88,3 @@ def przygotuj_wejscie(image_path, sensitivity):
         sign_number = sign_number + 1
     print("Frame został przetworzony poprawnie")
     return vector
-
-
-a = przygotuj_wejscie("src/img/training_vector.png", 86)
-
-print("asd")

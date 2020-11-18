@@ -10,8 +10,7 @@ def odczytaj_wagi():
         a = file.read(1)
         liczba = liczba + a
         if a == " ":
-            print(liczba)
-            wHidden = np.append(wHidden, liczba)
+            wHidden = np.append(wHidden, float(liczba))
             liczba = ""
     file.close()
     wHidden = np.resize(wHidden, (49, 41))
@@ -24,8 +23,7 @@ def odczytaj_wagi():
         a = file.read(1)
         liczba = liczba + a
         if a == " ":
-            print(liczba)
-            wOut = np.append(wOut, liczba)
+            wOut = np.append(wOut, float(liczba))
             liczba = ""
     file.close()
     wOut = np.resize(wOut, (41, 26))
