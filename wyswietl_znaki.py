@@ -7,7 +7,7 @@ import przygotuj_wejscie
 def wyswietl_znaki():
     global oOutput
     error = 0
-    Ek = przygotuj_wejscie.przygotuj_wejscie("src/img/example_4.png", 86)
+    Ek = przygotuj_wejscie.przygotuj_wejscie("src/img/example_2.png", 86)
     slownik = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
                "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
