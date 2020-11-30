@@ -10,7 +10,6 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessera
 def wyznaczWektorTrenujacy(image_path, sensitivity):
     """Funkcja która bedzie znajdywac w podaym obrazku 26 liter angielskiego alfabetu a nastepnie na ich
     podstawie tworzyc wektor trenujacy """
-
     """Image Pre-Processing , zamiana na GRAY bedzie pomocna przy klasyfikacji pixeli"""
     try:
         img = cv.imread(image_path)

@@ -1,8 +1,12 @@
+import time
+from tkinter import Tk, Label, HORIZONTAL
+from tkinter.ttk import Progressbar
+
 import numpy as np
-import training_vector
+import wektorTrenujacy
 
 
-def przepuscPrzezSiec(iteracje):
+def przepuscPrzezSiec(iteracje, wektor):
     def zapis_do_pliku(hidden, output, error):
         """Odpowiada za zapis wynikow o pliku"""
         file = open("src/wagi/hidden.txt", "w")
@@ -29,7 +33,7 @@ def przepuscPrzezSiec(iteracje):
     """Tworzenie DATA_SET"""
     global error
     error = 0
-    Ek = training_vector.wyznaczWektorTrenujacy("src/img/training_vector.png", 86)
+    Ek = wektorTrenujacy.wyznaczWektorTrenujacy(wektor, 86)
     Ck = np.zeros([26, 26])
 
     """Tworzenie przekatnej z 1. Kazdy kolejny bit danych to oddzielna litera"""
@@ -53,6 +57,32 @@ def przepuscPrzezSiec(iteracje):
     """O ile mają 'skakac' wagi"""
     learning_rate = 0.05
 
+    # ----------------------------WYŚWIETLANIE
+    learning = Tk()
+    learning.title("ZSI - Arkadiusz Wieruchowski - Trenowanie!")
+    learning.geometry('530x70')
+
+
+    lbl_iteracja = Label(learning, text="Iteracja:", width=10)
+    lbl_iteracja.grid(row=1, column=0)
+    lbl_iteracja_num = Label(learning, text="0", width=10)
+    lbl_iteracja_num.grid(row=1, column=1, sticky="w")
+
+    lbl_aktualnyBlad = Label(learning, text="Suma błędu:", width=10)
+    lbl_aktualnyBlad.grid(row=0, column=0)
+    lbl_aktualnyBlad_num = Label(learning, text="0", width=10)
+    lbl_aktualnyBlad_num.grid(row=0, column=1, sticky="w")
+
+    lbl_acc = Label(learning, text="Skuteczność:", width=10)
+    lbl_acc.grid(row=2, column=0)
+    lbl_acc_num = Label(learning, text="0", width=10)
+    lbl_acc_num.grid(row=2, column=1, sticky="w")
+
+    progress = Progressbar(learning, orient=HORIZONTAL,
+                           length=350, mode='determinate', )
+    progress.grid(column=3, row=1)
+
+    avg = 0
     for iteracja in range(iteracje):
         """Przeliczanie wartosci kazdego noda wedlug wzoru:
             xInput = (Ek[0] * xWeight[0]) + (Ek[1] * xWeight[1])....
@@ -71,9 +101,18 @@ def przepuscPrzezSiec(iteracje):
         """
         error = ((1 / 49) * (np.power((oOutput - Ck), 2)))
         print(error.sum())
+        if (iteracja % 1000 == 0) or (iteracja+1 == iteracje):
+            lbl_aktualnyBlad_num.configure(text=round(error.sum(), 4))
+            lbl_iteracja_num.configure(text=iteracja)
+            progress['value'] = round(((iteracja/iteracje)*100),1)
+            for j in range(len(oOutput)):
+                avg = avg + oOutput[j][j]
+            lbl_acc_num.configure(text=round(avg/26, 5))
+            avg = 0
+            learning.update()
 
-        """Ograniczenie precyzji do 0.001"""
-        if error.sum() < 0.001:
+        """Ograniczenie precyzji do 0.0001"""
+        if error.sum() < 0.0001:
             print("Algorytm wyuczony!")
             #zapisz_wagi(hWeight, oWeight, 0.001)
             zapis_do_pliku(hWeight, oWeight, error.sum())
@@ -105,8 +144,7 @@ def przepuscPrzezSiec(iteracje):
         hWeight -= learning_rate * hWynik
         oWeight -= learning_rate * oWynik
 
+    learning.mainloop()
     zapis_do_pliku(hWeight, oWeight, error.sum())
+
     return 0
-
-
-przepuscPrzezSiec(300000)

@@ -1,19 +1,21 @@
 from tkinter import *
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 from tkinter.ttk import Progressbar
 
 from PIL import ImageTk, Image
 import os
+from trenujSiec import przepuscPrzezSiec
 
 training_vector_path = "src/img/training_vector.png"
 training_vector_path_filename = "training_vector.png"
 input_vector_path = "src/img/example_2.png"
 input_vector_path_filename = "example_2.png"
+ilosc_iteracji = 100000
 
 
 frame = Tk()
 frame.title("ZSI - Arkadiusz Wieruchowski")
-frame.geometry('450x380')
+frame.geometry('450x330')
 
 
 def find_path_training(event):
@@ -43,8 +45,15 @@ def find_path_wejscie(event):
     return input_vector_path
 
 def trenuj_siec(event):
-    return 0
-
+    temp = messagebox.askquestion("Jesteś pewien?", "Własnie rozpoczynasz proces trenowania sieci , może to trochę "
+                                                    "potrwać w "
+                                             "zależności od ilości iteracji (default 10000). W tym czasie program "
+                                             "może nie reagować na polecenia. Czy jesteś pewien, że chcesz rozpocząć "
+                                             "ten process?")
+    if temp == "yes":
+        przepuscPrzezSiec(ilosc_iteracji, training_vector_path)
+    else:
+        return 0
 # TOP---------------------------------------------------------------------------------------
 top_frame = Frame(frame, width=200, height=200,)
 top_frame.grid(row=0, sticky="w")
@@ -108,15 +117,6 @@ rzuc_na_siec = Button(mid_frame_left, text="Rzuć na sieć")
 rzuc_na_siec.bind('<Button-1>', find_path_wejscie)
 rzuc_na_siec.grid(column=2, row=1)
 
-progresss = Frame(frame, width=200, height=200,)
-progresss.grid(column=0, row=3, pady=20)
-
-progress = Progressbar(progresss, orient = HORIZONTAL,
-            length = 350, mode = 'indeterminate')
-progress.grid(column=1, row=1)
-
-progress_status = Label(progresss, text="Status: ")
-progress_status.grid(row=1, column=0,)
 
 
 frame.mainloop()
