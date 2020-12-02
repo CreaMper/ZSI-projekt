@@ -5,17 +5,20 @@ from tkinter.ttk import Progressbar
 from PIL import ImageTk, Image
 import os
 from trenujSiec import przepuscPrzezSiec
+from wyswietl_znaki import wyswietl_znaki
 
-training_vector_path = "src/img/training_vector.png"
-training_vector_path_filename = "training_vector.png"
-input_vector_path = "src/img/example_2.png"
-input_vector_path_filename = "example_2.png"
-ilosc_iteracji = 100000
+training_vector_path = "src/img/Zestaw_1/zestaw_1.png"
+training_vector_path_filename = "zestaw_1.png"
+input_vector_path = "src/img/Zestaw_1/arkadiusz.png"
+input_vector_path_filename = "arkadiusz.png"
+skutecznosc = 0
+ilosc_iteracji = 10000
 
 
 frame = Tk()
 frame.title("ZSI - Arkadiusz Wieruchowski")
 frame.geometry('450x330')
+frame.iconbitmap("src/img/icon.ico")
 
 
 def find_path_training(event):
@@ -51,9 +54,21 @@ def trenuj_siec(event):
                                              "może nie reagować na polecenia. Czy jesteś pewien, że chcesz rozpocząć "
                                              "ten process?")
     if temp == "yes":
-        przepuscPrzezSiec(ilosc_iteracji, training_vector_path)
+        ilosc_iteracji = int(iteracje.get())
+        skutecznosc = przepuscPrzezSiec(ilosc_iteracji, training_vector_path)
+
+        lbl_skutecznosc.configure(text="SKUTECZNOŚĆ:"+str(round(skutecznosc,4))+"%")
+        lbl_stanSieci.configure(text="STAN : WYTRENOWANA")
+        lbl_wektor.configure(text="WEKTOR: "+str(training_vector_path_filename))
+        mid_frame_left.update()
     else:
         return 0
+
+def odczytaj_z_sieci(event):
+    string = wyswietl_znaki(str(input_vector_path))
+    messagebox.showinfo(title="String Wynikowy",
+                        message=string)
+    return 0
 # TOP---------------------------------------------------------------------------------------
 top_frame = Frame(frame, width=200, height=200,)
 top_frame.grid(row=0, sticky="w")
@@ -94,19 +109,20 @@ zmien_wejscie.grid(column=2, row=3, pady=5)
 mid_frame_left = Frame(frame, width=150, height=200, pady=3)
 mid_frame_left.grid(row=1, column=0, sticky="w", padx=(20,10))
 
-lbl_stanSieci = Label(mid_frame_left, text="STAN : WYTRENOWANA")
+lbl_stanSieci = Label(mid_frame_left, text="STAN : NIEWYTRENOWANA")
 lbl_stanSieci.grid(column=0, row=0 , sticky="w")
 
-lbl_wektor = Label(mid_frame_left, text="WEKTOR: training_vector.png")
+lbl_wektor = Label(mid_frame_left, text="WEKTOR: BRAK")
 lbl_wektor.grid(column=0, row=1, sticky="w")
 
-lbl_skutecznosc = Label(mid_frame_left, text="SKUTECZNOŚĆ: 97%")
+lbl_skutecznosc = Label(mid_frame_left, text="SKUTECZNOŚĆ:"+str(round(skutecznosc, 3))+"%")
 lbl_skutecznosc.grid(column=0, row=3, sticky="w")
 
 lbl_iteracje = Label(mid_frame_left, text="Iteracje: ")
 lbl_iteracje.grid(column=0, row=4, sticky="E", pady=10)
 
 iteracje = Entry(mid_frame_left, bd =5)
+iteracje.insert(0, ilosc_iteracji)
 iteracje.grid(row=4, column=1)
 
 trenuj = Button(mid_frame_left, text="TRENUJ")
@@ -114,7 +130,7 @@ trenuj.bind('<Button-1>', trenuj_siec)
 trenuj.grid(column=1, row=5,)
 
 rzuc_na_siec = Button(mid_frame_left, text="Rzuć na sieć")
-rzuc_na_siec.bind('<Button-1>', find_path_wejscie)
+rzuc_na_siec.bind('<Button-1>', odczytaj_z_sieci)
 rzuc_na_siec.grid(column=2, row=1)
 
 

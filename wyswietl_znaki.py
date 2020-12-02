@@ -4,10 +4,10 @@ import odczytaj_wagi
 import przygotuj_wejscie
 
 
-def wyswietl_znaki():
+def wyswietl_znaki(img_path):
     global oOutput
     error = 0
-    Ek = przygotuj_wejscie.przygotuj_wejscie("src/img/example_2.png", 86)
+    Ek = przygotuj_wejscie.przygotuj_wejscie(img_path, 86)
     slownik = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
                "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
@@ -37,6 +37,7 @@ def wyswietl_znaki():
     max_value = 0
     acc_sum = 0
 
+    string = ""
     """Wyświetlanie znaków """
     for i in range(len(oOutput)):
         for j in range(len(oOutput[i])):
@@ -45,12 +46,9 @@ def wyswietl_znaki():
                 max_value = oOutput[i, j]
                 max_iter = j
                 acc_sum = acc_sum + max_value
-        print(slownik[max_iter], end=" ")
+        string = string + str(slownik[max_iter])
         max_value = 0
         max_iter = 0
-    print(round(acc_sum / len(Ek), 5))
 
-    return 0
+    return string
 
-
-wyswietl_znaki()

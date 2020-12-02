@@ -1,5 +1,5 @@
 import time
-from tkinter import Tk, Label, HORIZONTAL
+from tkinter import Tk, Label, HORIZONTAL, messagebox
 from tkinter.ttk import Progressbar
 
 import numpy as np
@@ -83,6 +83,7 @@ def przepuscPrzezSiec(iteracje, wektor):
     progress.grid(column=3, row=1)
 
     avg = 0
+    sign_error = 0
     for iteracja in range(iteracje):
         """Przeliczanie wartosci kazdego noda wedlug wzoru:
             xInput = (Ek[0] * xWeight[0]) + (Ek[1] * xWeight[1])....
@@ -101,24 +102,16 @@ def przepuscPrzezSiec(iteracje, wektor):
         """
         error = ((1 / 49) * (np.power((oOutput - Ck), 2)))
         print(error.sum())
-        if (iteracja % 1000 == 0) or (iteracja+1 == iteracje):
-            lbl_aktualnyBlad_num.configure(text=round(error.sum(), 4))
-            lbl_iteracja_num.configure(text=iteracja)
-            progress['value'] = round(((iteracja/iteracje)*100),1)
-            for j in range(len(oOutput)):
-                avg = avg + oOutput[j][j]
-            lbl_acc_num.configure(text=round(avg/26, 5))
-            avg = 0
-            learning.update()
 
         """Ograniczenie precyzji do 0.0001"""
         if error.sum() < 0.0001:
             print("Algorytm wyuczony!")
             #zapisz_wagi(hWeight, oWeight, 0.001)
             zapis_do_pliku(hWeight, oWeight, error.sum())
-            a = 1 + 3
-            print(a)
-            return 0
+            y = messagebox.showinfo(title="Trenowanie sieci zakończone!", message="Program już więcej się nie nauczy! skutecznosć - "+wyswietl)
+            if y:
+                learning.destroy()
+            return wyswietl2*100
 
         """Metoda gradientu prostego (Gradient Descent)
             Znalezienie 3 pochodnych w warstwie output i ich podstawienie
@@ -143,8 +136,27 @@ def przepuscPrzezSiec(iteracje, wektor):
 
         hWeight -= learning_rate * hWynik
         oWeight -= learning_rate * oWynik
+        if (iteracja % 1000 == 0):
+            lbl_aktualnyBlad_num.configure(text=round(error.sum(), 4))
+            lbl_iteracja_num.configure(text=iteracja)
+            progress['value'] = round(((iteracja/iteracje)*100),1)
+            for i in range(len(oOutput)):
+                for j in range(len(oOutput)):
+                    sign_error = sign_error + abs(Ck[i][j] - oOutput[i][j])
+                    wyswietl = str(round(abs(sign_error / len(oOutput) - 1),4))
+                    wyswietl2 = round(abs(sign_error / len(oOutput) - 1),4)
+                lbl_acc_num.configure(text=wyswietl)
+                learning.update()
+                sign_error = 0
 
-    learning.mainloop()
+
+    progress['value'] = 100
+    lbl_iteracja_num.configure(text=iteracje)
+    learning.update()
     zapis_do_pliku(hWeight, oWeight, error.sum())
+    y = messagebox.showinfo(title="Trenowanie sieci zakończone!",
+                        message="Program przeszedł przez wszystkie "+str(iteracje)+ " iteracji.  Skutecznosć:  " + str(round(wyswietl2,3)*100) + "%")
+    if y:
+        learning.destroy()
 
-    return 0
+    return wyswietl2*100
